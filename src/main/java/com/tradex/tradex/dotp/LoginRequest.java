@@ -1,6 +1,5 @@
 package com.tradex.tradex.dotp;
 
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 

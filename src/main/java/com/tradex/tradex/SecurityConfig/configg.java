@@ -15,10 +15,14 @@ public class configg {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/health", "/api/auth/register").permitAll()
+
+                        .requestMatchers("/api/auth/health", "/api/auth/register", "/api/auth/login","/error").permitAll()
+
                         .anyRequest().authenticated()
                 );
+
         return http.build();
     }
 

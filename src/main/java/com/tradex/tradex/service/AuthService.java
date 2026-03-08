@@ -53,7 +53,7 @@ public class AuthService {
     public AuthResponse loginUser( LoginRequest loginRequest ) {
         String id = loginRequest.getIdentifier();
 
-        User user = userRepository.findByUsernameEmailOrPhoneNumber(id, id, id)
+        User user = userRepository.findByUsernameOrEmailOrPhoneNumber(id, id, id)
                 .orElseThrow(() -> new RuntimeException("Error: Invalid Login Credentials"));
         boolean passMatch = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
         if (!passMatch) {

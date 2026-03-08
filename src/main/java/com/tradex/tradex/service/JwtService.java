@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class jwtService {
+public class JwtService {
 
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;

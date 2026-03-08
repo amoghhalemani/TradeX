@@ -1,11 +1,11 @@
 package com.tradex.tradex.service;
 
 import com.tradex.tradex.Repository.UserRepository;
+import com.tradex.tradex.dotp.AuthResponse;
 import com.tradex.tradex.dotp.LoginRequest;
 import com.tradex.tradex.dotp.RegisterRequest;
 import com.tradex.tradex.model.Role;
 import com.tradex.tradex.model.User;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,11 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+
+    // injecting the jwt engine
+    private final JwtService jwtService;
+
+
 
     public String RegisterUser( RegisterRequest registerRequest ) {
         // checking for duplicates in database
@@ -45,17 +50,21 @@ public class AuthService {
         return "User Registered Successfully!";
     }
 
-    public String loginUser( LoginRequest loginRequest )
-    {
+    public AuthResponse loginUser( LoginRequest loginRequest ) {
         String id = loginRequest.getIdentifier();
 
         User user = userRepository.findByUsernameEmailOrPhoneNumber(id, id, id)
                 .orElseThrow(() -> new RuntimeException("Error: Invalid Login Credentials"));
         boolean passMatch = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
-        if(!passMatch)
-        {
+        if (!passMatch) {
             throw new RuntimeException("Error: Invalid Login Credentials");
         }
-        return "Successfully Logged In!";
+
+        // generating the token using username
+        String jwtToken = jwtService.GenerateToken(user.getUsername());
+
+        return AuthResponse.builder()
+                .token(jwtToken)
+                .build();
     }
 }
